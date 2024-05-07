@@ -1,31 +1,41 @@
 package com.example.listasimples
 
-import androidx.appcompat.app.AppCompatActivity
+
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ListView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+
+import java.util.ArrayList
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val etnovatarefa= findViewById<EditText>(R.id.etnovatarefa)
+        val etnovatarefa = findViewById<EditText>(R.id.etnovatarefa)
         val btadd = findViewById<Button>(R.id.btadd)
-        val lvTarefas = findViewById<ListView>(R.id.lvtarefas)
+        val tvtitulo = findViewById<TextView>(R.id.tvtitulo)
 
-        //aqui criamos a lista de strings, inicialmente vazia
-        val listaTarefas: ArrayList<String> = ArrayList()
-
-        //para  trabalhar com listas, precisamos de um adapter
-        //um componente adicional do android para layouy de listas
+        val fab = findViewById<FloatingActionButton>(R.id.fab)
+        fab.setOnClickListener {
+            tvtitulo.isVisible = false
+            etnovatarefa.isVisible = true
+            etnovatarefa.isEnabled = true
+            btadd.isVisible = true
+        }
+        val lvtarefas = findViewById<ListView>(R.id.lvtarefas)
+        val listaTarefas:ArrayList<String> = ArrayList()
         val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, listaTarefas)
+        lvtarefas.adapter =adapter
 
-        //aqui o adapter do listview recebeo adapter que criamos
-        lvTarefas.adapter = adapter
+
 
         btadd.setOnClickListener{
             if(etnovatarefa.text.isNullOrEmpty()){
@@ -35,10 +45,14 @@ class MainActivity : AppCompatActivity() {
                 listaTarefas.add(etnovatarefa.text.toString())
                 adapter.notifyDataSetChanged()
                 etnovatarefa.setText("")
+                etnovatarefa.isVisible = false
+                etnovatarefa.isEnabled = false
+                btadd.isVisible = false
+                tvtitulo.isVisible = true
             }
         }
 
-        lvTarefas.setOnItemLongClickListener { _, _, position, _ ->
+       lvtarefas.setOnItemLongClickListener { _, _, position, _ ->
 
             val alerta = AlertDialog.Builder(this)
             alerta.setTitle("Atenção")
